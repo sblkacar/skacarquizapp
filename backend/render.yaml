@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: quiz-app-backend
+    env: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: MONGODB_URI
+        value: mongodb+srv://skacarapp:keyskacarapp@softygame.vwjpm7a.mongodb.net/quiz-app
+      - key: JWT_SECRET
+        value: your_jwt_secret_key_here
+      - key: NODE_ENV
+        value: production 

@@ -1,0 +1,56 @@
+.dashboard-header {
+  background: linear-gradient(to right, var(--primary-bg), var(--secondary-bg));
+  color: var(--text-color);
+  border-radius: 10px;
+}
+
+.stat-card {
+  transition: transform 0.2s;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+.stat-icon {
+  font-size: 2rem;
+  opacity: 0.8;
+}
+
+.quiz-card {
+  transition: all 0.3s ease;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.quiz-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.quiz-stats {
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+}
+
+.quiz-card .card-footer {
+  background-color: transparent;
+  border-top: 1px solid #eee;
+}
+
+.btn-outline-primary, .btn-outline-info {
+  border-width: 2px;
+}
+
+.btn-outline-primary:hover, .btn-outline-info:hover {
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .stat-card {
+    margin-bottom: 1rem;
+  }
+} 
