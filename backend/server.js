@@ -1,13 +1,13 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const connectDB = require('./config/db');
+const mongoose = require('mongoose');
 
 const app = express();
 
 // Debug middleware
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   next();
 });
 
@@ -22,24 +22,39 @@ app.use(cors({
 // Body parser
 app.use(express.json());
 
-// Connect to database
-connectDB();
+// MongoDB connection with error handling
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => {
+  console.log('MongoDB connected successfully');
+}).catch(err => {
+  console.error('MongoDB connection error:', err);
+});
 
 // Base API route
 const apiRouter = express.Router();
 
-// Mount routes on API router
-apiRouter.use('/auth', require('./routes/authRoutes'));
-apiRouter.use('/quizzes', require('./routes/quizRoutes'));
-apiRouter.use('/users', require('./routes/userRoutes'));
-apiRouter.use('/results', require('./routes/resultRoutes'));
-apiRouter.use('/admin', require('./routes/adminRoutes'));
-apiRouter.use('/students', require('./routes/studentRoutes'));
-apiRouter.use('/stats', require('./routes/statsRoutes'));
+try {
+  // Mount routes on API router
+  apiRouter.use('/auth', require('./routes/authRoutes'));
+  apiRouter.use('/quizzes', require('./routes/quizRoutes'));
+  apiRouter.use('/users', require('./routes/userRoutes'));
+  apiRouter.use('/results', require('./routes/resultRoutes'));
+  apiRouter.use('/admin', require('./routes/adminRoutes'));
+  apiRouter.use('/students', require('./routes/studentRoutes'));
+  apiRouter.use('/stats', require('./routes/statsRoutes'));
+} catch (error) {
+  console.error('Error loading routes:', error);
+}
 
 // Health check on API router
 apiRouter.get('/health', (req, res) => {
-  res.json({ status: 'ok', message: 'API is running' });
+  res.json({ 
+    status: 'ok', 
+    message: 'API is running',
+    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+  });
 });
 
 // Mount API router at /api
@@ -47,7 +62,11 @@ app.use('/api', apiRouter);
 
 // Root health check
 app.get('/', (req, res) => {
-  res.json({ status: 'ok', message: 'Server is running' });
+  res.json({ 
+    status: 'ok', 
+    message: 'Server is running',
+    env: process.env.NODE_ENV
+  });
 });
 
 // Error handling
@@ -57,7 +76,8 @@ app.use((err, req, res, next) => {
     error: true,
     message: process.env.NODE_ENV === 'production' 
       ? 'Internal Server Error' 
-      : err.message
+      : err.message,
+    stack: process.env.NODE_ENV === 'production' ? undefined : err.stack
   });
 });
 
@@ -72,4 +92,5 @@ app.use((req, res) => {
   });
 });
 
+// Export the Express app
 module.exports = app; 
