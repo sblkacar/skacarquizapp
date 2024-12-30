@@ -1,14 +1,25 @@
 [build]
   base = "/"
-  command = "npm install @craco/craco && npm install && npm run build"
+  command = "rm -rf .cache node_modules && npm install && CI=false NODE_ENV=production npm run build"
   publish = "build"
 
 [build.environment]
   NODE_ENV = "production"
-  DISABLE_ESLINT_PLUGIN = "true"
+  REACT_APP_API_URL = "https://skacarquizapp.vercel.app/api"
   CI = "false"
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
-  status = 200 
+  status = 200
+
+[build.processing]
+  skip_processing = false
+[build.processing.css]
+  bundle = true
+  minify = true
+[build.processing.js]
+  bundle = true
+  minify = true
+[build.processing.images]
+  compress = true 
