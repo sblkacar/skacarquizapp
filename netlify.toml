@@ -16,5 +16,4 @@
   [headers.values]
     Access-Control-Allow-Origin = "*"
     Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, PATCH, OPTIONS"
-    Access-Control-Allow-Headers = "Content-Type, Authorization, Accept"
-    Cache-Control = "public, max-age=0, must-revalidate" 
+    Access-Control-Allow-Headers = "Content-Type, Authorization, Accept" 

@@ -1,17 +1,16 @@
-const API_URL = process.env.NODE_ENV === 'production'
-  ? 'https://skacarquizapp.vercel.app'
-  : 'http://localhost:5003';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5003/api';
 
 class ApiService {
   async request(endpoint, options = {}) {
     const url = `${API_URL}${endpoint}`;
+    console.log('API Request:', { url, method: options.method || 'GET' });
 
     const defaultOptions = {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      credentials: 'same-origin',
+      credentials: 'include',
       mode: 'cors'
     };
 

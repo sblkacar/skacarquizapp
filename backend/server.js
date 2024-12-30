@@ -60,24 +60,30 @@ app.use((err, req, res, next) => {
 });
 
 // Routes
-const router = express.Router();
+const apiRouter = express.Router();
 
-// API routes
-router.use('/auth', authRoutes);
-router.use('/quizzes', quizRoutes);
-router.use('/users', userRoutes);
-router.use('/results', resultRoutes);
-router.use('/admin', adminRoutes);
-router.use('/students', studentRoutes);
-router.use('/stats', statsRoutes);
+// API routes with /api prefix
+apiRouter.use('/auth', authRoutes);
+apiRouter.use('/quizzes', quizRoutes);
+apiRouter.use('/users', userRoutes);
+apiRouter.use('/results', resultRoutes);
+apiRouter.use('/admin', adminRoutes);
+apiRouter.use('/students', studentRoutes);
+apiRouter.use('/stats', statsRoutes);
 
 // Health check
-router.get('/health', (req, res) => {
+apiRouter.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Quiz App API is running' });
 });
 
-// Ana router'ı uygulama seviyesinde kullan
-app.use('/', router);
+// Mount API router with /api prefix
+app.use('/api', apiRouter);
+
+// Debug middleware - tüm istekleri logla
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path}`);
+  next();
+});
 
 // 404 handler
 app.use((req, res) => {
