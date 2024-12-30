@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Form, Button, Alert } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
+import api from '../../services/api';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -26,23 +27,10 @@ function Register() {
     }
 
     try {
-      const response = await fetch('http://localhost:5003/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          role: 'student'
-        })
-      });
-
-      const data = await response.json();
+      const response = await api.register(formData);
 
       if (!response.ok) {
-        throw new Error(data.message || 'Kayıt işlemi başarısız');
+        throw new Error(response.message || 'Kayıt işlemi başarısız');
       }
 
       // Başarılı kayıt sonrası login sayfasına yönlendir

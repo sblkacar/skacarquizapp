@@ -1,109 +1,73 @@
 import React, { useState } from 'react';
-import { Form, Button, Container, Row, Col, Card, Alert } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { Card, Form, Button, Alert } from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError('');
+    setLoading(true);
+    setError(null);
 
     try {
-      const data = await api.login({ email, password });
-      
-      if (data.token) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-
-        switch (data.user.role) {
-          case 'admin':
-            navigate('/admin/dashboard');
-            break;
-          case 'teacher':
-            navigate('/teacher/dashboard');
-            break;
-          case 'student':
-            navigate('/student/dashboard');
-            break;
-          default:
-            setError('Geçersiz kullanıcı rolü');
-        }
-      }
+      await api.login(formData);
+      navigate('/dashboard');
     } catch (error) {
-      setError('Giriş yapılırken bir hata oluştu');
+      setError(error.message);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   return (
     <div className="auth-container">
-      <Container>
-        <Row className="justify-content-center">
-          <Col md={6}>
-            <Card className="auth-card">
-              <Card.Body>
-                <h2 className="text-center mb-4">Quiz Yönetim Sistemi</h2>
-                
-                {error && <Alert variant="danger">{error}</Alert>}
+      <Card>
+        <Card.Body>
+          <Card.Title>Giriş Yap</Card.Title>
+          {error && <Alert variant="danger">{error}</Alert>}
+          
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({...formData, email: e.target.value})}
+                required
+              />
+            </Form.Group>
 
-                <Form onSubmit={handleSubmit}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>E-posta</Form.Label>
-                    <Form.Control
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      placeholder="E-posta adresiniz"
-                    />
-                  </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Şifre</Form.Label>
+              <Form.Control
+                type="password"
+                value={formData.password}
+                onChange={(e) => setFormData({...formData, password: e.target.value})}
+                required
+              />
+            </Form.Group>
 
-                  <Form.Group className="mb-3">
-                    <Form.Label>Şifre</Form.Label>
-                    <Form.Control
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      placeholder="Şifreniz"
-                    />
-                  </Form.Group>
+            <Button 
+              type="submit" 
+              disabled={loading}
+            >
+              {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
+            </Button>
+          </Form>
 
-                  <Button 
-                    variant="primary" 
-                    type="submit" 
-                    className="w-100"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
-                  </Button>
-                </Form>
-
-                <div className="mt-4">
-                  <h5>Test Kullanıcıları:</h5>
-                  <small className="text-muted">
-                    <p className="mb-1">Admin: admin@test.com / test123</p>
-                    <p className="mb-1">Öğretmen: teacher1@test.com / test123</p>
-                    <p className="mb-1">Öğrenci: student1@test.com / test123</p>
-                  </small>
-                </div>
-
-                <div className="text-center mt-3">
-                  <Card.Link href="/register">Hesabınız yok mu? Kayıt olun</Card.Link>
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
+          <div className="auth-footer">
+            Hesabınız yok mu? <Link to="/register">Kayıt Ol</Link>
+          </div>
+        </Card.Body>
+      </Card>
     </div>
   );
 }

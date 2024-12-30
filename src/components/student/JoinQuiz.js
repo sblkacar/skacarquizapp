@@ -1,44 +1,24 @@
 import React, { useState } from 'react';
-import { Container, Card, Form, Button, Alert } from 'react-bootstrap';
+import { Card, Form, Button, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { FaPlay } from 'react-icons/fa';
+import api from '../../services/api';
 
 function JoinQuiz() {
   const [accessCode, setAccessCode] = useState('');
-  const [error, setError] = useState('');
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleJoinQuiz = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
+    if (!accessCode.trim()) return;
 
-    const formattedCode = accessCode.trim().toUpperCase();
+    setLoading(true);
+    setError(null);
 
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('Token bulunamadı');
-      }
-
-      const response = await fetch('http://localhost:5003/api/quizzes/join', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ accessCode: formattedCode })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Quiz\'e katılma başarısız');
-      }
-
-      navigate(`/quiz/${data.quizId}`);
-
+      const data = await api.joinQuiz(accessCode.trim());
+      navigate(`/student/quiz/${data.quizId}`);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -47,45 +27,35 @@ function JoinQuiz() {
   };
 
   return (
-    <Container className="mt-4">
+    <div className="join-quiz-container">
       <Card>
-        <Card.Header>
-          <h4 className="mb-0">Quiz&apos;e Katıl</h4>
-        </Card.Header>
         <Card.Body>
-          {error && <Alert variant="danger">{error}</Alert>}
+          <Card.Title>Quiz'e Katıl</Card.Title>
           
-          <Form onSubmit={handleJoinQuiz}>
+          {error && <Alert variant="danger">{error}</Alert>}
+
+          <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
-              <Form.Label>Quiz Erişim Kodu</Form.Label>
+              <Form.Label>Quiz Kodu</Form.Label>
               <Form.Control
                 type="text"
                 value={accessCode}
                 onChange={(e) => setAccessCode(e.target.value)}
-                placeholder="6 karakterli kod (örn: ABC123)"
-                maxLength={6}
-                pattern="[A-Za-z0-9]{6}"
-                required
-                className="text-uppercase"
+                placeholder="Quiz kodunu girin"
+                disabled={loading}
               />
-              <Form.Text className="text-muted">
-                Erişim kodu 6 karakterli ve sadece harf ve rakamlardan oluşmalıdır.
-              </Form.Text>
             </Form.Group>
-
+            
             <Button 
               type="submit" 
-              variant="primary"
-              disabled={loading || accessCode.length !== 6}
-              className="d-flex align-items-center gap-2"
+              disabled={loading || !accessCode.trim()}
             >
-              <FaPlay />
-              {loading ? 'Kontrol ediliyor...' : 'Quiz\'e Katıl'}
+              {loading ? 'Katılınıyor...' : 'Katıl'}
             </Button>
           </Form>
         </Card.Body>
       </Card>
-    </Container>
+    </div>
   );
 }
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../services/api';
+import api from '../services/api';
 
-function PublicStats() {
+function Dashboard() {
   const [stats, setStats] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -22,15 +22,13 @@ function PublicStats() {
     fetchStats();
   }, []);
 
-  if (loading) return <div>Loading stats...</div>;
+  if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
   if (!stats) return <div>No stats available</div>;
 
   return (
-    <div>
-      {/* Stats görüntüleme */}
-    </div>
+    // ... render stats ...
   );
 }
 
-export default PublicStats; 
+export default Dashboard; 

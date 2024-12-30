@@ -1,86 +1,34 @@
 import React from 'react';
-import { Navbar as BootstrapNavbar, Container, Button } from 'react-bootstrap';
-import { FaBars, FaSignOutAlt, FaGraduationCap, FaUser } from 'react-icons/fa';
+import { Navbar, Nav, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import api from '../../services/api';
+import './Navbar.css';
 
-function Navbar({ toggleSidebar, isSidebarOpen }) {
+function AppNavbar() {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem('user'));
 
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate('/login');
-  };
-
-  const getUserRole = (role) => {
-    switch(role) {
-      case 'admin':
-        return 'Yönetici';
-      case 'teacher':
-        return 'Öğretmen';
-      case 'student':
-        return 'Öğrenci';
-      default:
-        return '';
+  const handleLogout = async () => {
+    try {
+      await api.logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout error:', error);
     }
   };
 
   return (
-    <BootstrapNavbar className="main-navbar">
-      <Container fluid className="px-3">
-        <div className="d-flex align-items-center">
-          <Button
-            className="sidebar-toggle"
-            data-testid="sidebar-toggle"
-            variant="link"
-            onClick={toggleSidebar}
-            style={{ 
-              width: '40px', 
-              height: '40px',
-              padding: 0,
-              color: '#1e293b'
-            }}
-          >
-            <FaBars size={20} />
+    <Navbar bg="light" expand="lg">
+      <Navbar.Brand href="/">Quiz App</Navbar.Brand>
+      <Navbar.Toggle aria-controls="basic-navbar-nav" />
+      <Navbar.Collapse id="basic-navbar-nav">
+        <Nav className="ms-auto">
+          <Button variant="outline-primary" onClick={handleLogout}>
+            Çıkış Yap
           </Button>
-          <BootstrapNavbar.Brand className="d-flex align-items-center">
-            <FaGraduationCap className="me-2" size={24} />
-            Quiz App
-          </BootstrapNavbar.Brand>
-        </div>
-        
-        <div className="d-flex align-items-center gap-3">
-          <div className="user-info d-none d-md-flex">
-            <Button
-              variant="link"
-              className="p-0 text-dark"
-              onClick={() => navigate('/profile')}
-            >
-              <FaUser className="me-2" />
-              {user?.name}
-            </Button>
-            <span className="user-role">
-              {getUserRole(user?.role)}
-            </span>
-          </div>
-          <Button
-            variant="link"
-            onClick={handleLogout}
-            className="logout-button"
-          >
-            <FaSignOutAlt />
-            Çıkış
-          </Button>
-        </div>
-      </Container>
-    </BootstrapNavbar>
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>
   );
 }
 
-Navbar.propTypes = {
-  toggleSidebar: PropTypes.func.isRequired,
-  isSidebarOpen: PropTypes.bool.isRequired
-};
-
-export default Navbar; 
+export default AppNavbar; 

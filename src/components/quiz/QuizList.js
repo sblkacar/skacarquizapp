@@ -1,0 +1,1 @@
+const quizzes = await api.getQuizzes(); 
