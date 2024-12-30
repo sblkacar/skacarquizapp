@@ -1,12 +1,12 @@
 [build]
   base = "/"
-  command = "npm install && FAST_REFRESH=false CI=false npm run build"
+  command = "npm install @craco/craco && npm install && npm run build"
   publish = "build"
 
 [build.environment]
   NODE_ENV = "production"
   DISABLE_ESLINT_PLUGIN = "true"
-  FAST_REFRESH = "false"
+  CI = "false"
 
 [[redirects]]
   from = "/*"
