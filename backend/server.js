@@ -26,85 +26,48 @@ const app = express();
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? [
-        'https://quiz-app-sibel.netlify.app',
-        'https://skacarquizapp.netlify.app',
-        /\.netlify\.app$/, // Tüm Netlify preview URL'lerini kabul et
-        /netlify\.app$/    // Alternatif pattern
-      ]
-    : 'http://localhost:3000',
+  origin: ['https://quiz-app-sibel.netlify.app', /\.netlify\.app$/],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-  optionsSuccessStatus: 200 // 204 yerine 200 döndür
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
 }));
-
-// Preflight istekleri için özel handler
-app.options('*', (req, res) => {
-  res.status(200).end();
-});
 
 // Body parser
 app.use(express.json());
 
-// Hata ayıklama middleware
-app.use((err, req, res, next) => {
-  console.error('Error:', err.stack);
-  res.status(500).json({
-    error: true,
-    message: process.env.NODE_ENV === 'production' 
-      ? 'Internal Server Error' 
-      : err.message
-  });
-});
-
 // Routes
-const apiRouter = express.Router();
-
-// API routes with /api prefix
-apiRouter.use('/auth', authRoutes);
-apiRouter.use('/quizzes', quizRoutes);
-apiRouter.use('/users', userRoutes);
-apiRouter.use('/results', resultRoutes);
-apiRouter.use('/admin', adminRoutes);
-apiRouter.use('/students', studentRoutes);
-apiRouter.use('/stats', statsRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/quizzes', quizRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/results', resultRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/students', studentRoutes);
+app.use('/api/stats', statsRoutes);
 
 // Health check
-apiRouter.get('/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Quiz App API is running' });
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok' });
 });
 
-// Mount API router with /api prefix
-app.use('/api', apiRouter);
-
-// Debug middleware - tüm istekleri logla
-app.use((req, res, next) => {
-  console.log(`${req.method} ${req.path}`);
-  next();
+// Error handling
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: err.message });
 });
 
 // 404 handler
 app.use((req, res) => {
-  console.log('404 - Route not found:', req.path);
   res.status(404).json({ 
-    error: true, 
-    message: 'Route not found',
-    path: req.path,
-    method: req.method
+    error: 'Route not found',
+    path: req.path 
   });
 });
 
-// Port ayarı
-const PORT = process.env.PORT || 5003;
-
-// Vercel için export
+// Export for Vercel
 module.exports = app;
 
-// Development için
+// Start server if not in production
 if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
+  const PORT = process.env.PORT || 5003;
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 } 

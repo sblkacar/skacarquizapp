@@ -8,12 +8,14 @@
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "server.js"
+      "src": "/(.*)",
+      "dest": "/server.js",
+      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]
     }
   ],
   "env": {
     "NODE_ENV": "production",
-    "CORS_ORIGIN": "https://quiz-app-sibel.netlify.app"
+    "MONGODB_URI": "@mongodb_uri",
+    "JWT_SECRET": "@jwt_secret"
   }
 } 
