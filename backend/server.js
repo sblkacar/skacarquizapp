@@ -24,18 +24,26 @@ connectDB();
 
 const app = express();
 
-// CORS options
+// CORS configuration
+const allowedOrigins = [
+  'https://quiz-app-sibel.netlify.app',
+  'http://localhost:3000'
+];
+
 const corsOptions = {
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-  exposedHeaders: ['Content-Type', 'Authorization']
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 };
 
-// CORS middleware'ini uygula
 app.use(cors(corsOptions));
-
-// Remove other CORS headers since we're using cors middleware
 app.use(express.json());
 
 // Routes
@@ -47,9 +55,9 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/students', studentRoutes);
 app.use('/api/stats', statsRoutes);
 
-// Health check endpoint'i ekle
+// Health check endpoint
 app.get('/', (req, res) => {
-  res.json({ message: 'Quiz App API is running' });
+  res.json({ status: 'ok', message: 'Quiz App API is running' });
 });
 
 // Port ayarı

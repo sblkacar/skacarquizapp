@@ -1,5 +1,6 @@
-// Sabit production URL'i kullan
-const API_URL = 'https://skacarquizapp.vercel.app/api';
+const API_URL = process.env.NODE_ENV === 'production'
+  ? 'https://skacarquizapp.vercel.app/api'
+  : 'http://localhost:5003/api';
 
 class ApiService {
   async request(endpoint, options = {}) {
@@ -10,7 +11,7 @@ class ApiService {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      mode: 'cors'
+      credentials: 'include'
     };
 
     try {

@@ -2,6 +2,10 @@
   command = "CI=false npm run build"
   publish = "build"
 
+[build.environment]
+  REACT_APP_API_URL = "https://skacarquizapp.vercel.app/api"
+  NODE_ENV = "production"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
