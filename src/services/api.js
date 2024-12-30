@@ -1,6 +1,4 @@
-const API_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://skacarquizapp.vercel.app/api'
-  : 'http://localhost:5003/api';
+const API_URL = 'https://skacarquizapp.vercel.app/api';
 
 const fetchWithCORS = async (url, options = {}) => {
   const defaultOptions = {
@@ -8,10 +6,12 @@ const fetchWithCORS = async (url, options = {}) => {
       'Content-Type': 'application/json',
       'Accept': 'application/json'
     },
+    mode: 'cors',
     credentials: 'include'
   };
 
   try {
+    console.log('Fetching from:', url);
     const response = await fetch(url, {
       ...defaultOptions,
       ...options,
