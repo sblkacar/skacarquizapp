@@ -1,9 +1,7 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-
 module.exports = {
   webpack: {
     configure: (webpackConfig) => {
-      // html-webpack-plugin yapılandırması
+      const HtmlWebpackPlugin = require('html-webpack-plugin');
       webpackConfig.plugins = webpackConfig.plugins.map(plugin => {
         if (plugin instanceof HtmlWebpackPlugin) {
           return new HtmlWebpackPlugin({
@@ -13,7 +11,6 @@ module.exports = {
         }
         return plugin;
       });
-
       return webpackConfig;
     }
   },

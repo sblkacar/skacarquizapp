@@ -1,0 +1,13 @@
+[build]
+  command = "FAST_REFRESH=false CI=false npm run build"
+  publish = "build"
+
+[build.environment]
+  NODE_ENV = "production"
+  DISABLE_ESLINT_PLUGIN = "true"
+  FAST_REFRESH = "false"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200 
