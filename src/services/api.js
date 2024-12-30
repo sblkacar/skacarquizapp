@@ -7,8 +7,7 @@ const fetchWithCORS = async (url, options = {}) => {
       'Content-Type': 'application/json',
       'Accept': 'application/json'
     },
-    mode: 'cors',
-    credentials: 'include'
+    mode: 'cors'
   };
 
   try {
@@ -33,15 +32,11 @@ const fetchWithCORS = async (url, options = {}) => {
   }
 };
 
-export const getPublicStats = async () => {
-  return fetchWithCORS(`${API_URL}/stats/public`);
-};
+export const getPublicStats = () => fetchWithCORS(`${API_URL}/stats/public`);
 
-export const login = async (credentials) => {
-  return fetchWithCORS(`${API_URL}/auth/login`, {
-    method: 'POST',
-    body: JSON.stringify(credentials)
-  });
-};
+export const login = (credentials) => fetchWithCORS(`${API_URL}/auth/login`, {
+  method: 'POST',
+  body: JSON.stringify(credentials)
+});
 
 // Diğer API çağrıları... 
