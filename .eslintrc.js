@@ -1,13 +1,7 @@
 module.exports = {
-  extends: [
-    'eslint:recommended',
-    'plugin:react/recommended',
-    'plugin:react-hooks/recommended',
-    'prettier'
-  ],
+  extends: ['react-app'],
   rules: {
-    'react/prop-types': 'error',
-    'no-unused-vars': 'warn',
-    'react-hooks/exhaustive-deps': 'warn'
+    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off'
   }
-} 
+}; 

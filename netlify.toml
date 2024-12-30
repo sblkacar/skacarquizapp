@@ -1,12 +1,13 @@
 [build]
   base = "/"
-  command = "rm -rf .cache node_modules && npm install && CI=false NODE_ENV=production npm run build"
+  command = "npm install && DISABLE_ESLINT_PLUGIN=true CI=false npm run build"
   publish = "build"
 
 [build.environment]
   NODE_ENV = "production"
   REACT_APP_API_URL = "https://skacarquizapp.vercel.app/api"
   CI = "false"
+  DISABLE_ESLINT_PLUGIN = "true"
 
 [[redirects]]
   from = "/*"
