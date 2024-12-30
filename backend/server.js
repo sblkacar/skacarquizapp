@@ -5,14 +5,47 @@ const mongoose = require('mongoose');
 
 const app = express();
 
-// Basic middleware
-app.use(cors());
+// CORS ayarlarını güncelleyelim
+app.use(cors({
+  origin: [
+    'https://quiz-app-sibel.netlify.app',
+    'https://quiz-app-backend-nine.vercel.app',
+    /\.netlify\.app$/,
+    'http://localhost:3000'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
+}));
+
 app.use(express.json());
 
-// MongoDB connection
+// Test endpoint'i ekleyelim
+app.get('/test', (req, res) => {
+  res.json({ message: 'API is working' });
+});
+
+// MongoDB test endpoint'i
+app.get('/test-db', async (req, res) => {
+  try {
+    await mongoose.connection.db.admin().ping();
+    res.json({ 
+      message: 'Database connection is working',
+      status: 'connected',
+      dbName: mongoose.connection.name
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      error: 'Database connection failed',
+      message: error.message 
+    });
+  }
+});
+
+// MongoDB bağlantısı
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
+  .catch(err => console.error('MongoDB error:', err));
 
 // Routes
 const authRoutes = require('./routes/authRoutes');

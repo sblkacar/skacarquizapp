@@ -1,4 +1,10 @@
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5003/api';
+const API_URL = process.env.REACT_APP_API_URL || (
+  process.env.NODE_ENV === 'production'
+    ? 'https://quiz-app-backend-nine.vercel.app'
+    : 'http://localhost:5003'
+);
+
+console.log('Using API URL:', API_URL); // Debug için
 
 class ApiService {
   async request(endpoint, options = {}) {

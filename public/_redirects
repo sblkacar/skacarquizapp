@@ -1,2 +1,2 @@
-/api/* https://skacarquizapp.vercel.app/api/:splat 200
-/*  /index.html  200
+/api/*  https://quiz-app-backend-nine.vercel.app/api/:splat  200
+/*      /index.html                                          200
