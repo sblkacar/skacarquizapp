@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -8,54 +9,56 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Simple health check
-app.get('/', (req, res) => {
+// MongoDB connection
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
+
+// Routes
+const authRoutes = require('./routes/authRoutes');
+const quizRoutes = require('./routes/quizRoutes');
+const userRoutes = require('./routes/userRoutes');
+const resultRoutes = require('./routes/resultRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const studentRoutes = require('./routes/studentRoutes');
+const statsRoutes = require('./routes/statsRoutes');
+
+// API routes
+app.use('/api/auth', authRoutes);
+app.use('/api/quizzes', quizRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/results', resultRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/students', studentRoutes);
+app.use('/api/stats', statsRoutes);
+
+// Health check
+app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// MongoDB connection
-const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log('MongoDB connected');
-  } catch (err) {
-    console.error('MongoDB connection error:', err);
-    process.exit(1);
-  }
-};
-
-// Routes
-const setupRoutes = () => {
-  const apiRouter = express.Router();
-  
-  apiRouter.get('/health', (req, res) => {
-    res.json({ status: 'ok' });
+// Root route
+app.get('/', (req, res) => {
+  res.json({ 
+    status: 'ok',
+    message: 'Quiz App API is running',
+    version: '1.0.0'
   });
+});
 
-  apiRouter.use('/auth', require('./routes/authRoutes'));
-  apiRouter.use('/quizzes', require('./routes/quizRoutes'));
-  apiRouter.use('/users', require('./routes/userRoutes'));
-  apiRouter.use('/results', require('./routes/resultRoutes'));
-  apiRouter.use('/admin', require('./routes/adminRoutes'));
-  apiRouter.use('/students', require('./routes/studentRoutes'));
-  apiRouter.use('/stats', require('./routes/statsRoutes'));
-
-  return apiRouter;
-};
-
-// Initialize app
-const init = async () => {
-  await connectDB();
-  app.use('/api', setupRoutes());
-  
-  // Error handler
-  app.use((err, req, res, next) => {
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' });
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    error: 'Not Found',
+    path: req.path
   });
-};
+});
 
-// Start the app
-init().catch(console.error);
+// Error handler
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: 'Internal Server Error' });
+});
 
+// Export the Express app
 module.exports = app; 
