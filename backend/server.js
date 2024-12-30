@@ -27,15 +27,23 @@ const app = express();
 // CORS configuration
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://quiz-app-sibel.netlify.app', 'https://skacarquizapp.netlify.app']
+    ? [
+        'https://quiz-app-sibel.netlify.app',
+        'https://skacarquizapp.netlify.app',
+        /\.netlify\.app$/, // Tüm Netlify preview URL'lerini kabul et
+        /netlify\.app$/    // Alternatif pattern
+      ]
     : 'http://localhost:3000',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  optionsSuccessStatus: 200 // 204 yerine 200 döndür
 }));
 
-// Preflight istekleri için
-app.options('*', cors());
+// Preflight istekleri için özel handler
+app.options('*', (req, res) => {
+  res.status(200).end();
+});
 
 // Body parser
 app.use(express.json());
