@@ -29,10 +29,10 @@ const corsOptions = {
   origin: [
     'http://localhost:3000',
     'https://quiz-app-sibel.netlify.app',
-    'https://quiz-app-sibel.onrender.com'
+    'https://skacarquizapp.vercel.app'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   credentials: true,
   optionsSuccessStatus: 200
 };
@@ -55,8 +55,15 @@ app.get('/', (req, res) => {
   res.json({ message: 'Quiz App API is running' });
 });
 
-const PORT = process.env.PORT || 5000;
+// Port ayarı
+const PORT = process.env.PORT || 5003;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-}); 
+// Vercel için export
+module.exports = app;
+
+// Development için
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+} 

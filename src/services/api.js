@@ -1,27 +1,35 @@
-const API_URL = process.env.REACT_APP_API_URL;
+const API_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://skacarquizapp.vercel.app/api'
+  : 'http://localhost:5003';
 
 const fetchWithCORS = async (url, options = {}) => {
   const defaultOptions = {
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
     },
     credentials: 'include'
   };
 
-  const response = await fetch(url, {
-    ...defaultOptions,
-    ...options,
-    headers: {
-      ...defaultOptions.headers,
-      ...options.headers
+  try {
+    const response = await fetch(url, {
+      ...defaultOptions,
+      ...options,
+      headers: {
+        ...defaultOptions.headers,
+        ...options.headers
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
     }
-  });
 
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
+    return response.json();
+  } catch (error) {
+    console.error('API Error:', error);
+    throw error;
   }
-
-  return response.json();
 };
 
 export const getPublicStats = async () => {
