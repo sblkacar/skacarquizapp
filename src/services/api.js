@@ -1,6 +1,6 @@
 const API_URL = process.env.NODE_ENV === 'production'
-  ? 'https://skacarquizapp.vercel.app/api'
-  : 'http://localhost:5003/api';
+  ? 'https://skacarquizapp.vercel.app'
+  : 'http://localhost:5003';
 
 class ApiService {
   async request(endpoint, options = {}) {

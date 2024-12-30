@@ -60,17 +60,26 @@ app.use((err, req, res, next) => {
 });
 
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/quizzes', quizRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/results', resultRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/students', studentRoutes);
-app.use('/api/stats', statsRoutes);
+app.use('/auth', authRoutes);
+app.use('/quizzes', quizRoutes);
+app.use('/users', userRoutes);
+app.use('/results', resultRoutes);
+app.use('/admin', adminRoutes);
+app.use('/students', studentRoutes);
+app.use('/stats', statsRoutes);
 
-// Health check endpoint
-app.get('/', (req, res) => {
+// Health check endpoint'i root'a taşıyalım
+app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Quiz App API is running' });
+});
+
+// Catch-all route for client-side routing
+app.get('*', (req, res) => {
+  res.status(404).json({ 
+    error: true, 
+    message: 'Route not found',
+    path: req.path 
+  });
 });
 
 // Port ayarı

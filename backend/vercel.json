@@ -11,10 +11,5 @@
       "src": "/(.*)",
       "dest": "server.js"
     }
-  ],
-  "env": {
-    "MONGODB_URI": "mongodb+srv://skacarapp:keyskacarapp@softygame.vwjpm7a.mongodb.net/quiz-app",
-    "JWT_SECRET": "your_jwt_secret_key_here",
-    "NODE_ENV": "production"
-  }
+  ]
 } 
