@@ -1,12 +1,17 @@
-const BASE_URL = 'https://skacarquizapp.vercel.app';
+const BASE_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:5003'
+  : 'https://skacarquizapp.vercel.app';
 
 class ApiService {
   constructor() {
     this.baseUrl = BASE_URL;
+    console.log('API Service initialized with baseUrl:', this.baseUrl);
   }
 
   async request(endpoint, options = {}) {
     const url = `${this.baseUrl}/api${endpoint}`;
+    console.log('Making request to:', url);
+
     const defaultOptions = {
       headers: {
         'Content-Type': 'application/json',
@@ -26,7 +31,8 @@ class ApiService {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.message || `HTTP error! status: ${response.status}`);
       }
 
       return response.json();

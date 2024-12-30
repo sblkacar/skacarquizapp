@@ -88,5 +88,6 @@
     "setupFilesAfterEnv": [
       "<rootDir>/src/setupTests.js"
     ]
-  }
+  },
+  "proxy": "https://skacarquizapp.vercel.app"
 }
