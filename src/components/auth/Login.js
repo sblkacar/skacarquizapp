@@ -18,8 +18,20 @@ function Login() {
     setError(null);
 
     try {
-      await api.login(formData);
-      navigate('/dashboard');
+      const data = await api.login(formData);
+      switch (data.user.role) {
+        case 'admin':
+          navigate('/admin/dashboard');
+          break;
+        case 'teacher':
+          navigate('/teacher/dashboard');
+          break;
+        case 'student':
+          navigate('/student/dashboard');
+          break;
+        default:
+          setError('Geçersiz kullanıcı rolü');
+      }
     } catch (error) {
       setError(error.message);
     } finally {

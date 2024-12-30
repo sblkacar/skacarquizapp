@@ -34,10 +34,25 @@ function QuizResult() {
         <Card.Title>Quiz Sonucu</Card.Title>
         <div className="result-details">
           <h4>{result.quizTitle}</h4>
-          <p>Puan: {result.score}%</p>
-          <p>Doğru Sayısı: {result.correctAnswers}</p>
-          <p>Toplam Soru: {result.totalQuestions}</p>
-          <p>Tamamlanma Tarihi: {new Date(result.completedAt).toLocaleDateString()}</p>
+          <div className="score-section">
+            <h5>Puan: {result.score}%</h5>
+            <p>Doğru Cevaplar: {result.correctAnswers} / {result.totalQuestions}</p>
+          </div>
+          <div className="questions-section">
+            {result.questions?.map((question, index) => (
+              <div key={index} className="question-item">
+                <p><strong>Soru {index + 1}:</strong> {question.text}</p>
+                <p>Sizin Cevabınız: {question.userAnswer}</p>
+                <p>Doğru Cevap: {question.correctAnswer}</p>
+                <p className={question.isCorrect ? 'text-success' : 'text-danger'}>
+                  {question.isCorrect ? 'Doğru' : 'Yanlış'}
+                </p>
+              </div>
+            ))}
+          </div>
+          <p className="completion-date">
+            Tamamlanma: {new Date(result.completedAt).toLocaleString('tr-TR')}
+          </p>
         </div>
       </Card.Body>
     </Card>
