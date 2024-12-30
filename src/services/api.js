@@ -11,8 +11,14 @@ class ApiService {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      credentials: 'include'
+      credentials: 'include',
+      mode: 'cors'
     };
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      defaultOptions.headers['Authorization'] = `Bearer ${token}`;
+    }
 
     try {
       const response = await fetch(url, {

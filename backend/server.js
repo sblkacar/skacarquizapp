@@ -25,26 +25,31 @@ connectDB();
 const app = express();
 
 // CORS configuration
-const allowedOrigins = [
-  'https://quiz-app-sibel.netlify.app',
-  'http://localhost:3000'
-];
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://quiz-app-sibel.netlify.app', 'https://skacarquizapp.netlify.app']
+    : 'http://localhost:3000',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
+}));
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-};
+// Preflight istekleri için
+app.options('*', cors());
 
-app.use(cors(corsOptions));
+// Body parser
 app.use(express.json());
+
+// Hata ayıklama middleware
+app.use((err, req, res, next) => {
+  console.error('Error:', err.stack);
+  res.status(500).json({
+    error: true,
+    message: process.env.NODE_ENV === 'production' 
+      ? 'Internal Server Error' 
+      : err.message
+  });
+});
 
 // Routes
 app.use('/api/auth', authRoutes);

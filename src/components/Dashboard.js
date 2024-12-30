@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { Card, Alert } from 'react-bootstrap';
 import api from '../services/api';
 
 function Dashboard() {
   const [stats, setStats] = useState(null);
-  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -12,7 +13,6 @@ function Dashboard() {
         const data = await api.getPublicStats();
         setStats(data);
       } catch (error) {
-        console.error('Error fetching stats:', error);
         setError(error.message);
       } finally {
         setLoading(false);
@@ -22,12 +22,22 @@ function Dashboard() {
     fetchStats();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!stats) return <div>No stats available</div>;
+  if (loading) return <div>Loading stats...</div>;
+  if (error) return <Alert variant="danger">{error}</Alert>;
 
   return (
-    // ... render stats ...
+    <Card>
+      <Card.Body>
+        <Card.Title>Dashboard</Card.Title>
+        {stats && (
+          <div className="stats-container">
+            <p>Toplam Quiz: {stats.totalQuizzes}</p>
+            <p>Toplam Kullanıcı: {stats.totalUsers}</p>
+            <p>Tamamlanan Quiz: {stats.completedQuizzes}</p>
+          </div>
+        )}
+      </Card.Body>
+    </Card>
   );
 }
 
