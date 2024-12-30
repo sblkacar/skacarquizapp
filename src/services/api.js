@@ -1,6 +1,6 @@
 const API_URL = process.env.NODE_ENV === 'production' 
   ? 'https://skacarquizapp.vercel.app/api'
-  : 'http://localhost:5003';
+  : 'http://localhost:5003/api';
 
 const fetchWithCORS = async (url, options = {}) => {
   const defaultOptions = {
@@ -22,7 +22,8 @@ const fetchWithCORS = async (url, options = {}) => {
     });
 
     if (!response.ok) {
-      throw new Error('Network response was not ok');
+      const error = await response.json();
+      throw new Error(error.message || 'Network response was not ok');
     }
 
     return response.json();
@@ -33,11 +34,11 @@ const fetchWithCORS = async (url, options = {}) => {
 };
 
 export const getPublicStats = async () => {
-  return fetchWithCORS(`${API_URL}/api/stats/public`);
+  return fetchWithCORS(`${API_URL}/stats/public`);
 };
 
 export const login = async (credentials) => {
-  return fetchWithCORS(`${API_URL}/api/auth/login`, {
+  return fetchWithCORS(`${API_URL}/auth/login`, {
     method: 'POST',
     body: JSON.stringify(credentials)
   });

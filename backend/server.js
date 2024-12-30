@@ -28,17 +28,19 @@ const app = express();
 const corsOptions = {
   origin: [
     'http://localhost:3000',
-    'https://quiz-app-sibel.netlify.app',
-    'https://skacarquizapp.vercel.app'
+    'https://quiz-app-sibel.netlify.app'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  exposedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
+  preflightContinue: false
 };
 
 // Middleware
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // CORS için preflight isteklerini ele al
 app.use(express.json());
 
 // Routes
