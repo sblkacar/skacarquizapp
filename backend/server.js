@@ -60,25 +60,33 @@ app.use((err, req, res, next) => {
 });
 
 // Routes
-app.use('/auth', authRoutes);
-app.use('/quizzes', quizRoutes);
-app.use('/users', userRoutes);
-app.use('/results', resultRoutes);
-app.use('/admin', adminRoutes);
-app.use('/students', studentRoutes);
-app.use('/stats', statsRoutes);
+const router = express.Router();
 
-// Health check endpoint'i root'a taşıyalım
-app.get('/health', (req, res) => {
+// API routes
+router.use('/auth', authRoutes);
+router.use('/quizzes', quizRoutes);
+router.use('/users', userRoutes);
+router.use('/results', resultRoutes);
+router.use('/admin', adminRoutes);
+router.use('/students', studentRoutes);
+router.use('/stats', statsRoutes);
+
+// Health check
+router.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Quiz App API is running' });
 });
 
-// Catch-all route for client-side routing
-app.get('*', (req, res) => {
+// Ana router'ı uygulama seviyesinde kullan
+app.use('/', router);
+
+// 404 handler
+app.use((req, res) => {
+  console.log('404 - Route not found:', req.path);
   res.status(404).json({ 
     error: true, 
     message: 'Route not found',
-    path: req.path 
+    path: req.path,
+    method: req.method
   });
 });
 

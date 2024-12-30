@@ -8,6 +8,38 @@
   ],
   "routes": [
     {
+      "src": "/auth/(.*)",
+      "dest": "server.js"
+    },
+    {
+      "src": "/users/(.*)",
+      "dest": "server.js"
+    },
+    {
+      "src": "/quizzes/(.*)",
+      "dest": "server.js"
+    },
+    {
+      "src": "/results/(.*)",
+      "dest": "server.js"
+    },
+    {
+      "src": "/admin/(.*)",
+      "dest": "server.js"
+    },
+    {
+      "src": "/students/(.*)",
+      "dest": "server.js"
+    },
+    {
+      "src": "/stats/(.*)",
+      "dest": "server.js"
+    },
+    {
+      "src": "/health",
+      "dest": "server.js"
+    },
+    {
       "src": "/(.*)",
       "dest": "server.js"
     }
