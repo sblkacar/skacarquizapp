@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Button, Container, Row, Col, Card, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import api from '../../services/api';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -15,23 +16,12 @@ function Login() {
     setError('');
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // Token ve kullanıcı bilgilerini kaydet
+      const data = await api.login({ email, password });
+      
+      if (data.token) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        localStorage.setItem('userName', data.user.name);
 
-        // Kullanıcı rolüne göre yönlendir
         switch (data.user.role) {
           case 'admin':
             navigate('/admin/dashboard');
@@ -45,12 +35,9 @@ function Login() {
           default:
             setError('Geçersiz kullanıcı rolü');
         }
-      } else {
-        setError(data.message);
       }
     } catch (error) {
-      console.error('Login error:', error);
-      setError('Giriş yapılırken bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
+      setError('Giriş yapılırken bir hata oluştu');
     } finally {
       setIsLoading(false);
     }

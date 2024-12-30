@@ -35,15 +35,7 @@ const corsOptions = {
 // CORS middleware'ini uygula
 app.use(cors(corsOptions));
 
-// Security headers ekle
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept');
-  next();
-});
-
-// Middleware
+// Remove other CORS headers since we're using cors middleware
 app.use(express.json());
 
 // Routes
