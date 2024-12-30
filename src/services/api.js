@@ -1,16 +1,9 @@
-const BASE_URL = window.location.hostname === 'localhost' 
-  ? 'http://localhost:5003'
-  : 'https://skacarquizapp.vercel.app';
+// Sabit production URL'i kullan
+const API_URL = 'https://skacarquizapp.vercel.app/api';
 
 class ApiService {
-  constructor() {
-    this.baseUrl = BASE_URL;
-    console.log('API Service initialized with baseUrl:', this.baseUrl);
-  }
-
   async request(endpoint, options = {}) {
-    const url = `${this.baseUrl}/api${endpoint}`;
-    console.log('Making request to:', url);
+    const url = `${API_URL}${endpoint}`;
 
     const defaultOptions = {
       headers: {
