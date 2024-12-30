@@ -27,7 +27,7 @@ describe('Quiz Flow', () => {
       role: 'student'
     });
 
-    // Get tokens
+    // Get tokens skacar
     const teacherRes = await request(app)
       .post('/api/auth/login')
       .send({ email: 'teacher@test.com', password: 'password123' });
