@@ -26,13 +26,12 @@ const app = express();
 
 // CORS options
 const corsOptions = {
-  origin: ['https://quiz-app-sibel.netlify.app'],
+  origin: 'https://quiz-app-sibel.netlify.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   exposedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
-  optionsSuccessStatus: 200,
-  preflightContinue: false
+  optionsSuccessStatus: 200
 };
 
 // CORS middleware'ini uygula

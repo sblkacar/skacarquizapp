@@ -1,6 +1,5 @@
-const API_URL = process.env.REACT_APP_API_URL || 'https://skacarquizapp.vercel.app/api';
-
-console.log('Current API_URL:', API_URL); // Debug için
+// Sabit API URL kullan
+const API_URL = 'https://skacarquizapp.vercel.app/api';
 
 const fetchWithCORS = async (url, options = {}) => {
   const defaultOptions = {
@@ -13,7 +12,6 @@ const fetchWithCORS = async (url, options = {}) => {
   };
 
   try {
-    console.log('Fetching from:', url); // Debug için
     const response = await fetch(url, {
       ...defaultOptions,
       ...options,
@@ -24,7 +22,7 @@ const fetchWithCORS = async (url, options = {}) => {
     });
 
     if (!response.ok) {
-      const error = await response.json();
+      const error = await response.json().catch(() => ({ message: 'Network error' }));
       throw new Error(error.message || 'Network response was not ok');
     }
 
@@ -36,12 +34,10 @@ const fetchWithCORS = async (url, options = {}) => {
 };
 
 export const getPublicStats = async () => {
-  console.log('Getting public stats from:', `${API_URL}/stats/public`); // Debug için
   return fetchWithCORS(`${API_URL}/stats/public`);
 };
 
 export const login = async (credentials) => {
-  console.log('Logging in at:', `${API_URL}/auth/login`); // Debug için
   return fetchWithCORS(`${API_URL}/auth/login`, {
     method: 'POST',
     body: JSON.stringify(credentials)
